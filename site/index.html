@@ -514,6 +514,20 @@ dialog::backdrop{background:rgba(5,9,4,.84);backdrop-filter:none}
   .hero-actions .btn{font-size:.74rem;padding:0 11px}
 }
 
+
+/* Compact portfolio sections */
+.free-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.free-card{min-width:0;border-radius:8px}
+.free-card .card-media{aspect-ratio:1/1;overflow:hidden}
+.free-card .card-media img{object-fit:cover}
+.free-body{gap:6px;padding:8px}
+.free-top{align-items:flex-start;flex-direction:column;gap:5px}
+.free-top b{font-size:.76rem;line-height:1.25;overflow-wrap:anywhere}
+.tag-free{font-size:.58rem;padding:3px 6px}
+.free-body .btn{min-height:32px;padding:0 7px;font-size:.66rem;gap:4px}
+.section-head .eyebrow,.section-head p{display:none}
+@media(max-width:599px){.free-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.free-body{padding:8px}.free-top{flex-direction:row;align-items:center;flex-wrap:wrap}}
+
 </style>
 </head>
 
@@ -634,7 +648,7 @@ dialog::backdrop{background:rgba(5,9,4,.84);backdrop-filter:none}
   <div class="container">
     <div class="notice" role="note"><svg class="ico"><use href="#i-warn"/></svg><div>Buka halaman ini melalui browser HP. Tekan titik tiga di pojok kanan atas, lalu pilih browser, atau chat manual di <b>085876832230</b></div></div>
     <div class="section-head">
-      <div><span class="eyebrow">KATALOG</span><h2 id="catalogTitle">Katalog Base Nama</h2><p>Pilih Town Hall untuk melihat contoh.</p></div>
+      <div><h2 id="catalogTitle">Katalog Base Nama</h2></div>
     </div>
     <div class="filter-bar"><div class="filters" id="filters" role="group" aria-label="Filter Town Hall"><button class="chip" type="button" aria-pressed="true" data-filter="all">SEMUA</button></div></div>
     <p class="result-count" id="resultCount" role="status" aria-live="polite"></p>
@@ -648,14 +662,14 @@ dialog::backdrop{background:rgba(5,9,4,.84);backdrop-filter:none}
 
 <section class="block" id="free" aria-labelledby="freeTitle">
   <div class="container">
-    <div class="section-head"><div><span class="eyebrow">GRATIS</span><h2 id="freeTitle">Free Base</h2><p>Coba desain yang tersedia secara gratis.</p></div></div>
+    <div class="section-head"><div><h2 id="freeTitle">Free Base</h2></div></div>
     <div class="free-grid" id="freeGallery"></div>
   </div>
 </section>
 
 <section class="block" id="price" aria-labelledby="priceTitle">
   <div class="container">
-    <div class="section-head"><div><span class="eyebrow">HARGA</span><h2 id="priceTitle">Price List</h2><p>Harga berdasarkan Town Hall.</p></div></div>
+    <div class="section-head"><div><h2 id="priceTitle">Price List</h2></div></div>
     <div class="price-grid">
       <div class="price"><b>TH 8 – 10</b><strong>Rp. 15.000</strong></div>
       <div class="price"><b>TH 11 – 13</b><strong>Rp. 20.000</strong></div>
@@ -666,7 +680,7 @@ dialog::backdrop{background:rgba(5,9,4,.84);backdrop-filter:none}
 
 <section class="block" id="how" aria-labelledby="howTitle">
   <div class="container">
-    <div class="section-head"><div><span class="eyebrow">LANGKAH</span><h2 id="howTitle">Cara Pesan</h2><p>Empat langkah simpel.</p></div></div>
+    <div class="section-head"><div><h2 id="howTitle">Cara Pesan</h2></div></div>
     <div class="steps">
       <article class="step"><div class="num">1</div><h3>Chat WhatsApp</h3><p>Hubungi WhatsApp untuk menanyakan jadwal pembuatan dan slot yang tersedia.</p></article>
       <article class="step"><div class="num">2</div><h3>Order &amp; Pembayaran</h3><p>Tentukan pesanan. Pembayaran menggunakan QRIS yang diberikan sebelum proses pembuatan dimulai.</p></article>
@@ -679,14 +693,14 @@ dialog::backdrop{background:rgba(5,9,4,.84);backdrop-filter:none}
 
 <section class="block" id="testi" aria-labelledby="testiTitle">
   <div class="container">
-    <div class="section-head"><div><span class="eyebrow">TESTIMONI</span><h2 id="testiTitle">Testimoni</h2><p>Screenshot pengalaman pelanggan.</p></div></div>
+    <div class="section-head"><div><h2 id="testiTitle">Testimoni</h2></div></div>
     <div class="testi-grid" id="testiGallery"><div class="empty-soft" style="grid-column:1/-1">Segera hadir</div></div>
   </div>
 </section>
 
 <section class="block" id="faq" aria-labelledby="faqTitle">
   <div class="container">
-    <div class="section-head"><div><span class="eyebrow">FAQ</span><h2 id="faqTitle">FAQ</h2><p>Pertanyaan yang sering ditanyakan.</p></div></div>
+    <div class="section-head"><div><h2 id="faqTitle">FAQ</h2></div></div>
     <div class="faq">
       <details><summary>Apakah perlu login akun CoC?</summary><p>Tidak. Pembuatan base tidak membutuhkan login akun. Hasil dikirim sebagai link base CoC.</p></details>
       <details><summary>Pembayarannya bagaimana?</summary><p>Pembayaran menggunakan QRIS yang diberikan sebelum proses pembuatan dimulai.</p></details>
