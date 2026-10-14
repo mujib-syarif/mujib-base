@@ -462,6 +462,58 @@ dialog::backdrop{background:rgba(5,9,4,.84);backdrop-filter:none}
   .skeleton{animation:none}
 }
 
+
+/* ---------- MOBILE REFINEMENT: COMPACT FANTASY ---------- */
+.kicker{
+  width:max-content;
+  max-width:100%;
+  padding:5px 10px;
+  font-size:.62rem;
+  line-height:1.25;
+  letter-spacing:.09em;
+  gap:6px;
+  border-radius:5px;
+}
+.kicker i{width:6px;height:6px;flex:none}
+.hero .role{
+  font-size:clamp(.68rem,2vw,.88rem);
+  letter-spacing:.11em;
+  line-height:1.45;
+}
+.hero .tagline{
+  font-size:clamp(1rem,3vw,1.35rem);
+  line-height:1.35;
+}
+.hero .sub{
+  font-size:clamp(.82rem,2vw,.94rem);
+  line-height:1.55;
+}
+.hero-actions{gap:8px;margin-top:18px}
+.hero-actions .btn{min-height:42px;padding:0 15px;font-size:.8rem}
+.hero-card{padding:clamp(18px,4vw,48px)}
+.notice{font-size:.8rem;line-height:1.45;padding:10px 12px;gap:9px}
+.notice .ico{width:18px;height:18px;flex:none}
+.notice b{white-space:normal}
+@media(max-width:599px){
+  .hero-card{min-height:0;padding:20px 16px 22px}
+  .hero h1{font-size:clamp(1.8rem,8vw,2.8rem);line-height:1.08}
+  .hero .role{margin-bottom:10px}
+  .hero .tagline{margin-top:0}
+  .hero .sub{margin-top:8px}
+  .hero-actions{align-items:flex-start}
+  .hero-actions .btn{width:auto;max-width:100%}
+  .features{gap:8px}
+  .feature{gap:9px;padding:11px}
+  .feature .ico{width:22px;height:22px}
+  .feature b{font-size:.84rem}
+  .feature small{font-size:.72rem}
+}
+@media(max-width:380px){
+  .kicker{font-size:.56rem;padding:5px 8px;letter-spacing:.055em}
+  .hero-card{padding:17px 13px 19px}
+  .hero-actions .btn{font-size:.74rem;padding:0 11px}
+}
+
 </style>
 </head>
 
@@ -580,7 +632,7 @@ dialog::backdrop{background:rgba(5,9,4,.84);backdrop-filter:none}
 
 <section class="block" id="catalog" aria-labelledby="catalogTitle">
   <div class="container">
-    <div class="notice" role="note"><svg class="ico"><use href="#i-warn"/></svg><div>Jika tombol WhatsApp tidak ter-direct ke aplikasi, buka halaman ini melalui browser HP. Tekan titik tiga di pojok kanan atas, lalu pilih browser, atau chat manual di <b>085876832230</b></div></div>
+    <div class="notice" role="note"><svg class="ico"><use href="#i-warn"/></svg><div>Buka halaman ini melalui browser HP. Tekan titik tiga di pojok kanan atas, lalu pilih browser, atau chat manual di <b>085876832230</b></div></div>
     <div class="section-head">
       <div><span class="eyebrow">KATALOG</span><h2 id="catalogTitle">Katalog Base Nama</h2><p>Pilih Town Hall untuk melihat contoh.</p></div>
     </div>
