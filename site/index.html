@@ -1162,8 +1162,6 @@ function makeCard(it, eager) {
   body.appendChild(el("span", "card-title", it.name));
   var meta = el("div", "card-meta");
   meta.appendChild(el("span", "", "Clash of Clans"));
-  var price = priceForTH(it.th);
-  if (price) meta.appendChild(el("strong", "", price));
   body.appendChild(meta);
   b.append(media, body);
   b.addEventListener("click", function () { openDetail(it); });
@@ -1362,7 +1360,7 @@ function showDetail(it) {
   img.width = it.w; img.height = it.h;
   $("#detailTitle").textContent = it.name;
   $("#detailSub").textContent = it.th ? "TH " + it.th + " • Base Nama Clash of Clans" : "Base Nama • Clash of Clans";
-  $("#detailPrice").textContent = priceForTH(it.th);
+  $("#detailPrice").textContent = "";
   $("#detailOrder").href = WA + "?text=" + encodeURIComponent("Halo Mujib, saya mau pesan base " + it.name + (it.th ? " TH " + it.th : "") + ".");
   if (!detail.open) detail.showModal();
   detail.querySelector(".sheet").scrollTop = 0;
