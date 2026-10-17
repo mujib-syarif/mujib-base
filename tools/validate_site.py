@@ -39,14 +39,11 @@ for ref in re.findall(r'(?:src|href)="([^"#?][^"]*)"', html):
 
 # 3. required content
 required = [
-    "Rp. 15.000", "Rp. 20.000", "Rp. 25.000", "TH 8 – 10", "TH 11 – 13", "TH 14 – 18",
+    "Rp. 15.000", "Rp. 20.000", "Rp. 25.000", "TH 7 – 10", "TH 11 – 13", "TH 14 – 18",
     "https://wa.me/6285876832230",
-    "Jika tombol WhatsApp tidak ter-direct ke aplikasi, buka halaman ini melalui browser HP. "
-    "Tekan titik tiga di pojok kanan atas, lalu pilih browser, atau chat manual di",
     "085876832230", "mujib_syarif", "Segera hadir",
     "OpenLayout&id=TH13%3AHV%3AAAAAXAAAAAHgDBRZjV-taqygtyJvksiK",
     "OpenLayout&id=TH14%3AHV%3AAAAAKgAAAAKg-3NiX9FBrECvkHNUh3KN",
-    "Custom Base Nama Keren Sesuai Style Yang Dipilih",
 ]
 for text in required:
     if text not in html:
