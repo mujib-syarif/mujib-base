@@ -1,0 +1,50 @@
+name: BaseNama quality checks
+
+on:
+  pull_request:
+    paths:
+      - "site/**"
+      - "scripts/check_basenama.py"
+      - ".github/workflows/basenama-check.yml"
+  push:
+    branches: [main]
+    paths:
+      - "site/**"
+      - "scripts/check_basenama.py"
+      - ".github/workflows/basenama-check.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Validate HTML structure, manifests, and gallery assets
+        run: python scripts/check_basenama.py
+      - name: Check inline JavaScript syntax
+        shell: bash
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          html = Path("site/index.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script(?:\s[^>]*)?>([\s\S]*?)</script>", html, re.I)
+          for index, script in enumerate(scripts):
+              if not script.strip():
+                  continue
+              path = Path(f"/tmp/basenama-inline-{index}.js")
+              path.write_text(script, encoding="utf-8")
+              print(f"Checking {path.name}")
+          PY
+          for file in /tmp/basenama-inline-*.js; do node --check "$file"; done
