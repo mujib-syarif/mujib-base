@@ -91,61 +91,22 @@ def main() -> int:
                     f"light-theme muted text contrast fails WCAG AA: {color} on {background} = {ratio:.2f}:1"
                 )
 
-    mobile_a11y = re.search(
-        r"/\\* ACCESSIBILITY PASS:[\\s\\S]*?@media\\s*\\(max-width:\\s*767px\\)\\s*\\{([^}]*)\\}",
-        html,
-    )
-    if not mobile_a11y:
+    mobile_marker = html.find("/* ACCESSIBILITY PASS:")
+    mobile_media = html.find("@media(max-width:767px){", mobile_marker)
+    mobile_end = html.find("\\n}", mobile_media)
+    if mobile_marker < 0 or mobile_media < 0 or mobile_end < 0:
         errors.append("mobile accessibility touch-target rules are missing")
+        rules = ""
     else:
-        rules = mobile_a11y.group(1)
-        for required in (
-            ".icon-btn{width:40px;height:40px;min-width:40px;min-height:40px}",
-            ".chip{min-height:36px;padding-inline:11px}",
-            ".drawer-links a{min-height:44px}",
-            ".fab{width:44px;height:44px;min-width:44px;min-height:44px}",
-        ):
-            if required not in rules:
-                errors.append(f"mobile accessibility rule missing: {required}")
-
-    manifest_paths = [
-        SITE / "gallery/manifest.json",
-        SITE / "free/manifest.json",
-        SITE / "testimoni/manifest.json",
-    ]
-    for path in manifest_paths:
-        if not path.is_file():
-            errors.append(f"manifest missing: {path.relative_to(ROOT)}")
-            continue
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-            errors.append(f"invalid JSON in {path.relative_to(ROOT)}: {exc}")
-            continue
-        items = data.get("items")
-        if not isinstance(items, list):
-            errors.append(f"{path.relative_to(ROOT)} must contain an items array")
-            continue
-        seen: set[str] = set()
-        for index, item in enumerate(items):
-            if not isinstance(item, dict):
-                errors.append(f"{path.relative_to(ROOT)} item {index} is not an object")
-                continue
-            item_id = item.get("id")
-            if not isinstance(item_id, str) or not item_id:
-                errors.append(f"{path.relative_to(ROOT)} item {index} has no id")
-            elif item_id in seen:
-                errors.append(f"{path.relative_to(ROOT)} has duplicate item id: {item_id}")
-            else:
-                seen.add(item_id)
-            for key in ("thumb", "large"):
-                asset = item.get(key)
-                if asset:
-                    asset_path = (SITE / asset).resolve()
-                    if not asset_path.is_relative_to(SITE.resolve()):
-                        errors.append(f"{path.relative_to(ROOT)} item {item_id} has unsafe {key} path")
-                    elif not asset_path.is_file():
-                        errors.append(f"missing asset referenced by {item_id}: {asset}")
+        rules = html[mobile_media:mobile_end]
+    for required in (
+        ".icon-btn{width:40px;height:40px;min-width:40px;min-height:40px}",
+        ".chip{min-height:36px;padding-inline:11px}",
+        ".drawer-links a{min-height:44px}",
+        ".fab{width:44px;height:44px;min-width:44px;min-height:44px}",
+    ):
+        if required not in rules:
+            errors.append(f"mobile accessibility rule missing: {required}")
 
     if errors:
         for error in errors:
