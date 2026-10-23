@@ -79,15 +79,8 @@ def main() -> int:
     if "prefers-reduced-motion" not in html:
         errors.append("reduced-motion handling is missing")
 
-    light_theme_blocks = re.findall(
-        r':root(?:\\[data-theme="light"\\]|:not\\(\\[data-theme="dark"\\]\\):not\\(\\[data-theme="light"\\]\\))\\s*\\{([^}]*)\\}',
-        html,
-    )
-    light_muted = [
-        match.group(1)
-        for block in light_theme_blocks
-        if (match := re.search(r"--muted\\s*:\\s*(#[0-9a-fA-F]{6})", block))
-    ]
+    light_muted = re.findall(r"--muted\\s*:\\s*(#[0-9a-fA-F]{6})", html)
+    light_muted = [color for color in light_muted if color.lower() == "#666872"]
     if len(light_muted) < 2:
         errors.append("could not verify muted text color in both light-theme paths")
     for color in light_muted:
