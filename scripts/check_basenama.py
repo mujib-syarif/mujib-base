@@ -93,7 +93,7 @@ def main() -> int:
 
     mobile_marker = html.find("/* ACCESSIBILITY PASS:")
     mobile_media = html.find("@media(max-width:767px){", mobile_marker)
-    mobile_end = html.find("}", mobile_media)
+    mobile_end = html.find(chr(10) + "}", mobile_media)
     if mobile_marker < 0 or mobile_media < 0 or mobile_end < 0:
         errors.append("mobile accessibility touch-target rules are missing")
         rules = ""
