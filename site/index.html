@@ -543,7 +543,7 @@ dialog::backdrop{background:rgba(5,9,4,.84);backdrop-filter:none}
 :root[data-theme="light"]{
   color-scheme:light;
   --bg:#f4f4f6;--bg2:#ffffff;--panel:#ffffff;--panel2:#f0f0f3;
-  --text:#17181b;--text2:#4e5057;--muted:#777982;
+  --text:#17181b;--text2:#4e5057;--muted:#666872;
   --purple:#555963;--purple2:#30333a;--purple3:#696c75;--green:#16171a;--amber:#676a72;
   --line:rgba(20,22,28,.10);--line2:rgba(20,22,28,.16);
 }
@@ -551,7 +551,7 @@ dialog::backdrop{background:rgba(5,9,4,.84);backdrop-filter:none}
   :root:not([data-theme="dark"]):not([data-theme="light"]){
     color-scheme:light;
     --bg:#f4f4f6;--bg2:#ffffff;--panel:#ffffff;--panel2:#f0f0f3;
-    --text:#17181b;--text2:#4e5057;--muted:#777982;
+    --text:#17181b;--text2:#4e5057;--muted:#666872;
     --purple:#555963;--purple2:#30333a;--purple3:#696c75;--green:#16171a;--amber:#676a72;
     --line:rgba(20,22,28,.10);--line2:rgba(20,22,28,.16);
   }
@@ -846,6 +846,20 @@ html{scroll-padding-top:66px}
 @media(max-width:380px){.container{padding-inline:10px}.hero-card{height:216px;max-height:216px;padding:14px}.hero h1{font-size:1.75rem}.hero-actions .btn{font-size:.59rem;padding-inline:8px}.hero-actions .ico{width:12px;height:12px}.feature{padding:7px}.feature b{font-size:.66rem}.feature small{font-size:.58rem}.newest .card{flex-basis:70%}#gallery .card-media{height:112px}.free-card .card-media{height:105px}.price strong{font-size:.61rem}}
 @media(min-width:768px){.hero-card{min-height:300px;padding:30px}.hero h1{font-size:clamp(2.5rem,5vw,3.5rem)}.hero-actions .btn{min-height:38px;font-size:.75rem}.block{padding-top:34px}.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}#gallery .card-media{height:clamp(150px,20vw,210px);aspect-ratio:auto}.free-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.free-card .card-media{height:175px;aspect-ratio:auto}.step{padding:14px 14px 14px 54px}}
 @media(min-width:1100px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}#gallery .card-media{height:190px}}
+
+
+/* ACCESSIBILITY PASS: readable light-theme secondary text and comfortable touch targets */
+@media(max-width:767px){
+  .icon-btn{width:40px;height:40px;min-width:40px;min-height:40px}
+  .icon-btn .ico{width:18px;height:18px}
+  .theme-btn{font-size:1rem}
+  .chip{min-height:36px;padding-inline:11px}
+  .hero-actions .btn{min-height:38px}
+  .drawer-links a{min-height:44px}
+  .free-body .btn{min-height:36px}
+  .load-more{min-height:40px}
+  .fab{width:44px;height:44px;min-width:44px;min-height:44px}
+}
 
 </style>
 </head>
