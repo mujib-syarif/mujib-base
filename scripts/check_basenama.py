@@ -79,10 +79,10 @@ def main() -> int:
     if "prefers-reduced-motion" not in html:
         errors.append("reduced-motion handling is missing")
 
-    light_muted = re.findall(r"--muted\\s*:\\s*(#[0-9a-fA-F]{6})", html)
-    light_muted = [color for color in light_muted if color.lower() == "#666872"]
-    if len(light_muted) < 2:
+    light_muted_count = html.count("--muted:#666872")
+    if light_muted_count < 2:
         errors.append("could not verify muted text color in both light-theme paths")
+    light_muted = ["#666872"] if light_muted_count >= 2 else []
     for color in light_muted:
         for background in ("#f4f4f6", "#ffffff"):
             ratio = contrast_ratio(color, background)
