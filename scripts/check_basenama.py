@@ -35,6 +35,18 @@ class AuditParser(HTMLParser):
             self.images_without_alt.append(attrs.get("src", "(dynamic image)"))
 
 
+def relative_luminance(hex_color: str) -> float:
+    value = hex_color.lstrip("#")
+    channels = [int(value[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    linear = [channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4 for channel in channels]
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+
+def contrast_ratio(foreground: str, background: str) -> float:
+    first, second = relative_luminance(foreground), relative_luminance(background)
+    return (max(first, second) + 0.05) / (min(first, second) + 0.05)
+
+
 def fail(message: str):
     print(f"FAIL: {message}")
     return 1
@@ -66,6 +78,42 @@ def main() -> int:
         errors.append("expected WhatsApp order destination is missing")
     if "prefers-reduced-motion" not in html:
         errors.append("reduced-motion handling is missing")
+
+    light_theme_blocks = re.findall(
+        r':root(?:\\[data-theme="light"\\]|:not\\(\\[data-theme="dark"\\]\\):not\\(\\[data-theme="light"\\]\\))\\s*\\{([^}]*)\\}',
+        html,
+    )
+    light_muted = [
+        match.group(1)
+        for block in light_theme_blocks
+        if (match := re.search(r"--muted\\s*:\\s*(#[0-9a-fA-F]{6})", block))
+    ]
+    if len(light_muted) < 2:
+        errors.append("could not verify muted text color in both light-theme paths")
+    for color in light_muted:
+        for background in ("#f4f4f6", "#ffffff"):
+            ratio = contrast_ratio(color, background)
+            if ratio < 4.5:
+                errors.append(
+                    f"light-theme muted text contrast fails WCAG AA: {color} on {background} = {ratio:.2f}:1"
+                )
+
+    mobile_a11y = re.search(
+        r"/\\* ACCESSIBILITY PASS:[\\s\\S]*?@media\\s*\\(max-width:\\s*767px\\)\\s*\\{([^}]*)\\}",
+        html,
+    )
+    if not mobile_a11y:
+        errors.append("mobile accessibility touch-target rules are missing")
+    else:
+        rules = mobile_a11y.group(1)
+        for required in (
+            ".icon-btn{width:40px;height:40px;min-width:40px;min-height:40px}",
+            ".chip{min-height:36px;padding-inline:11px}",
+            ".drawer-links a{min-height:44px}",
+            ".fab{width:44px;height:44px;min-width:44px;min-height:44px}",
+        ):
+            if required not in rules:
+                errors.append(f"mobile accessibility rule missing: {required}")
 
     manifest_paths = [
         SITE / "gallery/manifest.json",
@@ -112,7 +160,7 @@ def main() -> int:
         return 1
     print(
         "PASS: HTML IDs and in-page links, external-link safety, image alt attributes, "
-        "required metadata, reduced-motion support, manifest JSON, unique item IDs, and assets."
+        "required metadata, reduced-motion support, light-theme contrast, mobile touch targets, manifest JSON, unique item IDs, and assets."
     )
     return 0
 
