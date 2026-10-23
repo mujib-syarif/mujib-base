@@ -1110,7 +1110,7 @@ function assetUrl(path, v) {
 }
 function priceForTH(th) {
   if (!th) return "";
-  if (th >= 8 && th <= 10) return "Rp. 15.000";
+  if (th >= 7 && th <= 10) return "Rp. 15.000";
   if (th >= 11 && th <= 13) return "Rp. 20.000";
   if (th >= 14 && th <= 18) return "Rp. 25.000";
   return "";
@@ -1360,7 +1360,7 @@ function showDetail(it) {
   img.width = it.w; img.height = it.h;
   $("#detailTitle").textContent = it.name;
   $("#detailSub").textContent = it.th ? "TH " + it.th + " • Base Nama Clash of Clans" : "Base Nama • Clash of Clans";
-  $("#detailPrice").textContent = "";
+  $("#detailPrice").textContent = priceForTH(it.th) || "Tanyakan harga via WhatsApp";
   $("#detailOrder").href = WA + "?text=" + encodeURIComponent("Halo Mujib, saya mau pesan base " + it.name + (it.th ? " TH " + it.th : "") + ".");
   if (!detail.open) detail.showModal();
   detail.querySelector(".sheet").scrollTop = 0;
