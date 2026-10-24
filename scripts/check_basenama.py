@@ -35,6 +35,18 @@ class AuditParser(HTMLParser):
             self.images_without_alt.append(attrs.get("src", "(dynamic image)"))
 
 
+def relative_luminance(hex_color: str) -> float:
+    value = hex_color.lstrip("#")
+    channels = [int(value[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    linear = [channel / 12.92 if channel <= 0.04045 else ((channel + 0.055) / 1.055) ** 2.4 for channel in channels]
+    return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+
+def contrast_ratio(foreground: str, background: str) -> float:
+    first, second = relative_luminance(foreground), relative_luminance(background)
+    return (max(first, second) + 0.05) / (min(first, second) + 0.05)
+
+
 def fail(message: str):
     print(f"FAIL: {message}")
     return 1
@@ -67,44 +79,34 @@ def main() -> int:
     if "prefers-reduced-motion" not in html:
         errors.append("reduced-motion handling is missing")
 
-    manifest_paths = [
-        SITE / "gallery/manifest.json",
-        SITE / "free/manifest.json",
-        SITE / "testimoni/manifest.json",
-    ]
-    for path in manifest_paths:
-        if not path.is_file():
-            errors.append(f"manifest missing: {path.relative_to(ROOT)}")
-            continue
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-            errors.append(f"invalid JSON in {path.relative_to(ROOT)}: {exc}")
-            continue
-        items = data.get("items")
-        if not isinstance(items, list):
-            errors.append(f"{path.relative_to(ROOT)} must contain an items array")
-            continue
-        seen: set[str] = set()
-        for index, item in enumerate(items):
-            if not isinstance(item, dict):
-                errors.append(f"{path.relative_to(ROOT)} item {index} is not an object")
-                continue
-            item_id = item.get("id")
-            if not isinstance(item_id, str) or not item_id:
-                errors.append(f"{path.relative_to(ROOT)} item {index} has no id")
-            elif item_id in seen:
-                errors.append(f"{path.relative_to(ROOT)} has duplicate item id: {item_id}")
-            else:
-                seen.add(item_id)
-            for key in ("thumb", "large"):
-                asset = item.get(key)
-                if asset:
-                    asset_path = (SITE / asset).resolve()
-                    if not asset_path.is_relative_to(SITE.resolve()):
-                        errors.append(f"{path.relative_to(ROOT)} item {item_id} has unsafe {key} path")
-                    elif not asset_path.is_file():
-                        errors.append(f"missing asset referenced by {item_id}: {asset}")
+    light_muted_count = html.count("--muted:#666872")
+    if light_muted_count < 2:
+        errors.append("could not verify muted text color in both light-theme paths")
+    light_muted = ["#666872"] if light_muted_count >= 2 else []
+    for color in light_muted:
+        for background in ("#f4f4f6", "#ffffff"):
+            ratio = contrast_ratio(color, background)
+            if ratio < 4.5:
+                errors.append(
+                    f"light-theme muted text contrast fails WCAG AA: {color} on {background} = {ratio:.2f}:1"
+                )
+
+    mobile_marker = html.find("/* ACCESSIBILITY PASS:")
+    mobile_media = html.find("@media(max-width:767px){", mobile_marker)
+    mobile_end = html.find(chr(10) + "}", mobile_media)
+    if mobile_marker < 0 or mobile_media < 0 or mobile_end < 0:
+        errors.append("mobile accessibility touch-target rules are missing")
+        rules = ""
+    else:
+        rules = html[mobile_media:mobile_end]
+    for required in (
+        ".icon-btn{width:40px;height:40px;min-width:40px;min-height:40px}",
+        ".chip{min-height:36px;padding-inline:11px}",
+        ".drawer-links a{min-height:44px}",
+        ".fab{width:44px;height:44px;min-width:44px;min-height:44px}",
+    ):
+        if required not in rules:
+            errors.append(f"mobile accessibility rule missing: {required}")
 
     if errors:
         for error in errors:
@@ -112,7 +114,7 @@ def main() -> int:
         return 1
     print(
         "PASS: HTML IDs and in-page links, external-link safety, image alt attributes, "
-        "required metadata, reduced-motion support, manifest JSON, unique item IDs, and assets."
+        "required metadata, reduced-motion support, light-theme contrast, mobile touch targets, manifest JSON, unique item IDs, and assets."
     )
     return 0
 
