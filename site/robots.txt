@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mujib-syarif.basenama.workers.dev/sitemap.xml
+Sitemap: https://mujib-syarif.mujib.workers.dev/sitemap.xml
