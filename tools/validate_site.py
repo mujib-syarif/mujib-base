@@ -22,11 +22,46 @@ for key in ("gallery", "free", "testimoni"):
     if not mf.exists():
         err(f"missing {mf.relative_to(ROOT)}")
         continue
-    items = json.loads(mf.read_text(encoding="utf-8")).get("items", [])
-    for it in items:
+    try:
+        manifest = json.loads(mf.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        err(f"{key}: invalid manifest JSON ({exc})")
+        continue
+
+    items = manifest.get("items", [])
+    if not isinstance(items, list):
+        err(f"{key}: manifest 'items' must be an array")
+        continue
+
+    seen_ids = set()
+    site_root = SITE.resolve()
+    for index, it in enumerate(items):
+        if not isinstance(it, dict):
+            err(f"{key}: item {index} must be an object")
+            continue
+
+        item_id = it.get("id")
+        if not isinstance(item_id, str) or not item_id.strip():
+            err(f"{key}: item {index} has no valid id")
+        elif item_id in seen_ids:
+            err(f"{key}: duplicate item id: {item_id}")
+        else:
+            seen_ids.add(item_id)
+
         for field in ("thumb", "large"):
-            if field in it and not (SITE / it[field]).exists():
-                err(f"{key}: {it[field]} listed in manifest but file is missing")
+            if field not in it:
+                if field == "thumb":
+                    err(f"{key}: item {index} is missing required thumb path")
+                continue
+            raw_path = it[field]
+            if not isinstance(raw_path, str) or not raw_path.strip():
+                err(f"{key}: item {index} has invalid {field} path")
+                continue
+            target = (SITE / raw_path).resolve()
+            if not target.is_relative_to(site_root):
+                err(f"{key}: {field} path escapes site directory: {raw_path}")
+            elif not target.is_file():
+                err(f"{key}: {raw_path} listed in manifest but file is missing")
     print(f"ok  {key}: {len(items)} items")
 
 # 2. local references in index.html exist
