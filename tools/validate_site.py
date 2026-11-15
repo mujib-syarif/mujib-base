@@ -66,5 +66,32 @@ for dead in ("card-fav", "fav-empty", "api.github.com", "raw.githubusercontent.c
 if (ROOT / "gallery").exists():
     err("top-level gallery/ exists; generated images must live in site/gallery/")
 
+# 6. every absolute site URL (canonical, og:url, og:image, twitter:image, sitemap, robots) uses one host
+from urllib.parse import urlparse
+
+absolute_urls: list[tuple[str, str]] = []
+for m in re.finditer(r'<link[^>]+rel="canonical"[^>]*href="([^"]+)"', html):
+    absolute_urls.append(("index.html canonical", m.group(1)))
+for m in re.finditer(r'<meta[^>]+(?:property|name)="(og:url|og:image|twitter:image)"[^>]*content="([^"]+)"', html):
+    absolute_urls.append((f"index.html {m.group(1)}", m.group(2)))
+sitemap = SITE / "sitemap.xml"
+if sitemap.exists():
+    for loc in re.findall(r"<loc>\s*([^<\s]+)\s*</loc>", sitemap.read_text(encoding="utf-8")):
+        absolute_urls.append(("sitemap.xml <loc>", loc))
+robots = SITE / "robots.txt"
+if robots.exists():
+    for line in robots.read_text(encoding="utf-8").splitlines():
+        if line.lower().startswith("sitemap:"):
+            absolute_urls.append(("robots.txt Sitemap", line.split(":", 1)[1].strip()))
+hosts = {urlparse(u).netloc.lower() for _, u in absolute_urls}
+if not absolute_urls:
+    err("no absolute site URLs found (canonical/og/sitemap/robots)")
+elif len(hosts) != 1:
+    for where, u in absolute_urls:
+        print(f"  {where}: {u}")
+    err(f"absolute URLs use more than one host: {sorted(hosts)}")
+else:
+    print(f"ok  absolute URLs: {len(absolute_urls)} refs, single host {next(iter(hosts))}")
+
 print("FAILED" if errors else "All checks passed")
 sys.exit(1 if errors else 0)

@@ -100,8 +100,8 @@ def main() -> int:
     else:
         rules = html[mobile_media:mobile_end]
     for required in (
-        ".icon-btn{width:40px;height:40px;min-width:40px;min-height:40px}",
-        ".chip{min-height:36px;padding-inline:11px}",
+        ".icon-btn{width:44px;height:44px;min-width:44px;min-height:44px}",
+        ".chip{min-height:44px;padding-inline:12px}",
         ".drawer-links a{min-height:44px}",
         ".fab{width:44px;height:44px;min-width:44px;min-height:44px}",
     ):
