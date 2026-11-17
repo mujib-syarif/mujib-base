@@ -186,7 +186,7 @@ a{color:inherit}
 .tag-free{padding:4px 10px;border-radius:999px;background:rgba(37,211,102,.14);color:#6ff0a0;font-weight:800;font-size:.7rem;letter-spacing:.1em}
 
 /* PRICE */
-.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
 .price{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:22px 8px;text-align:center;border:1px solid var(--line2);border-radius:var(--r);background:linear-gradient(160deg,rgba(155,92,255,.1),rgba(19,16,29,.8));transition:transform .25s var(--ease),border-color .25s}
 .price:hover{transform:translateY(-3px);border-color:rgba(155,92,255,.6)}
 .price b{color:var(--text2);font-size:.9rem}
@@ -1009,6 +1009,7 @@ html{scroll-padding-top:66px}
       <div class="price"><b>TH 7 – 10</b><strong>Rp. 15.000</strong></div>
       <div class="price"><b>TH 11 – 13</b><strong>Rp. 20.000</strong></div>
       <div class="price"><b>TH 14 – 18</b><strong>Rp. 25.000</strong></div>
+      <div class="price"><b>TH 19</b><strong>Rp. 30.000</strong></div>
     </div>
   </div>
 </section>
@@ -1133,6 +1134,7 @@ function priceForTH(th) {
   if (th >= 7 && th <= 10) return "Rp. 15.000";
   if (th >= 11 && th <= 13) return "Rp. 20.000";
   if (th >= 14 && th <= 18) return "Rp. 25.000";
+  if (th === 19) return "Rp. 30.000";
   return "";
 }
 function label(it) { return it.th ? it.name + " — TH " + it.th : it.name; }
